@@ -47,7 +47,7 @@ This is a modular and scalable **test automation framework** built using **Pytho
 ## ⚙️ Pre-requisites
 Before running tests, ensure the following are set up:
 * Install google chrome
-* Python 3.11.4
+* Python 3.13.3
 * Dependencies installed `pip install -r requirements.txt`
 * Chrome web driver added to path environment variable. 
 * Firefox web driver added to path environment variable. 
