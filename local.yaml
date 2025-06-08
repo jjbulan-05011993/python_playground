@@ -1,0 +1,6 @@
+settings:
+  env:
+    # Environments
+    username: testuser
+    password: password123
+    webdriver_visible: True

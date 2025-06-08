@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test App Modular</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    .hidden { display: none; }
+    .error { color: red; }
+    .success { color: green; }
+    input, button { margin: 5px 0; }
+  </style>
+</head>
+<body>
+  <h1>Sample Test App</h1>
+
+  <!-- Login Section -->
+  <div id="login-section">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Username">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p id="login-message"></p>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dashboard" class="hidden">
+    <h2>Dashboard</h2>
+    <button onclick="logout()">Logout</button>
+    <p>Select a page to perform operations:</p>
+    <button onclick="showPage('form-page')">Go to Form Page</button>
+    <button onclick="showPage('list-page')">Go to Item List Page</button>
+  </div>
+
+  <!-- Form Page -->
+<div id="form-page" class="hidden">
+  <h3>Form Submission</h3>
+
+  <!-- Text Input -->
+  <label for="form-input">Text Input:</label>
+  <input type="text" id="form-input" placeholder="Type something">
+
+  <!-- Dropdown -->
+  <label for="dropdown">Select Option:</label>
+  <select id="dropdown">
+    <option value="">--Select--</option>
+    <option value="Option A">Option A</option>
+    <option value="Option B">Option B</option>
+    <option value="Option C">Option C</option>
+  </select>
+
+  <!-- Date Picker -->
+  <label for="date">Pick a Date:</label>
+  <input type="date" id="date">
+
+  <!-- Radio Buttons -->
+  <p>Choose one:</p>
+  <label><input type="radio" name="choice" value="Yes"> Yes</label>
+  <label><input type="radio" name="choice" value="No"> No</label>
+
+  <!-- Checkbox -->
+  <p>
+    <label><input type="checkbox" id="agree"> I agree to the terms</label>
+  </p>
+
+  <!-- Submit -->
+  <button onclick="submitForm()">Submit</button>
+  <p id="form-message"></p>
+  <button onclick="backToDashboard()">Back to Dashboard</button>
+</div>
+
+  <!-- Item List Page -->
+  <div id="list-page" class="hidden">
+    <h3>Item List (CRUD)</h3>
+    <input type="text" id="item-input" placeholder="New item">
+    <button onclick="addItem()">Add Item</button>
+    <ul id="item-list"></ul>
+    <button onclick="backToDashboard()">Back to Dashboard</button>
+  </div>
+
+  <script>
+    const validUsername = "testuser";
+    const validPassword = "password123";
+
+    function login() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      const message = document.getElementById("login-message");
+
+      if (username === validUsername && password === validPassword) {
+        message.textContent = "Login successful!";
+        message.className = "success";
+        document.getElementById("login-section").classList.add("hidden");
+        document.getElementById("dashboard").classList.remove("hidden");
+      } else {
+        message.textContent = "Invalid credentials.";
+        message.className = "error";
+      }
+    }
+
+    function logout() {
+      hideAllSections();
+      document.getElementById("login-section").classList.remove("hidden");
+      document.getElementById("username").value = "";
+      document.getElementById("password").value = "";
+      document.getElementById("login-message").textContent = "";
+    }
+
+    function showPage(pageId) {
+      hideAllSections();
+      document.getElementById(pageId).classList.remove("hidden");
+    }
+
+    function backToDashboard() {
+      hideAllSections();
+      document.getElementById("dashboard").classList.remove("hidden");
+    }
+
+    function hideAllSections() {
+      const sections = ["dashboard", "form-page", "list-page"];
+      sections.forEach(id => document.getElementById(id).classList.add("hidden"));
+    }
+
+    function submitForm() {
+  const input = document.getElementById("form-input").value.trim();
+  const dropdown = document.getElementById("dropdown").value;
+  const date = document.getElementById("date").value;
+  const choice = document.querySelector("input[name='choice']:checked");
+  const agree = document.getElementById("agree").checked;
+  const message = document.getElementById("form-message");
+
+  if (!input || !dropdown || !date || !choice || !agree) {
+    message.textContent = "Please fill all fields and agree to the terms.";
+    message.className = "error";
+    return;
+  }
+
+  message.textContent = `Form submitted successfully!
+  Text: ${input},
+  Option: ${dropdown},
+  Date: ${date},
+  Choice: ${choice.value},
+  Agreed: ${agree}`;
+  message.className = "success";
+}
+
+    function addItem() {
+  const input = document.getElementById("item-input").value;
+  if (input.trim() === "") return;
+
+  const ul = document.getElementById("item-list");
+  const li = document.createElement("li");
+
+  const span = document.createElement("span");
+  span.textContent = input;
+
+  const editInput = document.createElement("input");
+  editInput.type = "text";
+  editInput.value = input;
+  editInput.classList.add("hidden");
+
+  const editBtn = document.createElement("button");
+  editBtn.textContent = "Edit";
+
+  editBtn.onclick = () => {
+    if (editInput.classList.contains("hidden")) {
+      // Switch to edit mode
+      editInput.classList.remove("hidden");
+      span.classList.add("hidden");
+      editBtn.textContent = "Save";
+    } else {
+      // Save edit
+      const newValue = editInput.value.trim();
+      if (newValue !== "") {
+        span.textContent = newValue;
+        editInput.value = newValue;
+      }
+      editInput.classList.add("hidden");
+      span.classList.remove("hidden");
+      editBtn.textContent = "Edit";
+    }
+  };
+
+  const deleteBtn = document.createElement("button");
+  deleteBtn.textContent = "Delete";
+  deleteBtn.onclick = () => ul.removeChild(li);
+
+  li.appendChild(span);
+  li.appendChild(editInput);
+  li.appendChild(editBtn);
+  li.appendChild(deleteBtn);
+
+  ul.appendChild(li);
+  document.getElementById("item-input").value = "";
+}
+
+  </script>
+</body>
+</html>
